@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0d0f">
+<title>IBAN Bilgileri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0d0f; --ink:#f2eee5; --muted:#b5b1a7;
+  --gold:#dcc08a; --gold-d:#b5935a; --steel:#c7cbd1; --steel-d:#8b9097;
+  --line:rgba(220,192,138,.28);
+  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --ui:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+*{box-sizing:border-box;margin:0}
+html,body{overflow-x:clip}
+body{min-height:100vh;min-height:100svh;background:var(--bg);color:var(--ink);font-family:var(--ui);
+  display:flex;justify-content:center;align-items:center;
+  padding:max(28px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  -webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ---------- ARKA PLAN ---------- */
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 0%,#1b1c20 0%,#0f1012 55%,#08090a 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;will-change:transform}
+.b1{width:60vmax;height:60vmax;left:-15vmax;top:-20vmax;background:radial-gradient(circle,rgba(220,192,138,.30),transparent 65%);animation:drift1 38s ease-in-out infinite alternate}
+.b2{width:55vmax;height:55vmax;right:-18vmax;bottom:-22vmax;background:radial-gradient(circle,rgba(110,130,160,.28),transparent 65%);animation:drift2 46s ease-in-out infinite alternate}
+.b3{width:36vmax;height:36vmax;left:40%;top:45%;background:radial-gradient(circle,rgba(181,147,90,.16),transparent 65%);animation:drift3 52s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(18vmax,12vmax) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-16vmax,-10vmax) scale(1.1)}}
+@keyframes drift3{to{transform:translate(-14vmax,-16vmax) scale(.85)}}
+.pattern{position:absolute;inset:-260px;opacity:.07;color:var(--steel);animation:pat 70s linear infinite}
+.pattern svg{width:100%;height:100%;display:block}
+@keyframes pat{to{transform:translate(260px,260px)}}
+.vignette{position:absolute;inset:0;background:radial-gradient(90% 75% at 50% 50%,transparent 45%,rgba(0,0,0,.6) 100%)}
+.big{position:absolute;color:var(--steel);opacity:.07;animation:float 22s ease-in-out infinite alternate}
+.big svg{width:100%;height:100%;overflow:visible}
+.big.a{width:min(34vw,360px);left:-5vw;top:6vh;--r:-24deg}
+.big.b{width:min(30vw,320px);right:-4vw;bottom:5vh;--r:18deg;animation-delay:-8s;animation-duration:26s}
+.big.c{width:min(24vw,250px);left:3vw;bottom:-3vh;--r:12deg;animation-delay:-14s}
+.big.d{width:min(22vw,230px);right:4vw;top:-2vh;--r:-10deg;animation-delay:-5s;animation-duration:30s}
+@keyframes float{from{transform:translateY(-14px) rotate(var(--r))}to{transform:translateY(18px) rotate(calc(var(--r) + 6deg))}}
+#sparks{position:absolute;inset:0;width:100%;height:100%}
+
+/* berber direği */
+.pole{position:fixed;z-index:2;top:calc(16px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));
+  width:20px;height:76px;border-radius:10px;overflow:hidden;opacity:.9;
+  box-shadow:0 0 0 2px #2a2c30,0 0 0 3px var(--gold-d),0 8px 18px rgba(0,0,0,.5)}
+.pole i{position:absolute;left:0;right:0;top:0;height:calc(100% + 57px);
+  background:repeating-linear-gradient(-45deg,#b83a35 0 10px,#f1ede4 10px 20px,#2f5aa6 20px 30px,#f1ede4 30px 40px);
+  animation:spin 3.2s linear infinite}
+.pole::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.28) 35%,transparent 60%,rgba(0,0,0,.4))}
+@keyframes spin{to{transform:translateY(-56.57px)}}
+
+/* ---------- SAYFA ---------- */
+main{position:relative;z-index:1;width:100%;max-width:490px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.rise{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.s1{animation-delay:.1s}.s2{animation-delay:.5s}.s3{animation-delay:.9s}
+@keyframes rise{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+
+.emblem{width:clamp(84px,24vw,112px);height:auto;color:var(--gold);filter:drop-shadow(0 0 14px rgba(220,192,138,.35));margin-bottom:14px}
+.emblem .ring{animation:ringspin 60s linear infinite;transform-origin:60px 60px}
+@keyframes ringspin{to{transform:rotate(360deg)}}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,8.4vw,3.1rem);line-height:1.08;letter-spacing:.09em;text-transform:uppercase;
+  max-width:100%;overflow-wrap:anywhere;color:var(--ink);
+  background:linear-gradient(100deg,#9ea3aa 0%,#f4f0e7 28%,#dcc08a 50%,#f4f0e7 72%,#9ea3aa 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 9s ease-in-out infinite alternate}
+@keyframes sheen{to{background-position:100% 0}}
+.tag{display:flex;align-items:center;gap:14px;margin:10px 0 28px;color:var(--muted);font-family:var(--display);font-style:italic;font-weight:500;font-size:clamp(1rem,4.2vw,1.18rem)}
+.tag::before,.tag::after{content:"";width:clamp(24px,9vw,52px);height:1px;background:linear-gradient(90deg,transparent,var(--gold-d))}
+.tag::after{transform:scaleX(-1)}
+
+/* ---------- KART ---------- */
+.stage{width:100%;perspective:1100px}
+.card{--mx:50%;--my:0%;--rx:0deg;--ry:0deg;position:relative;width:100%;text-align:left;border-radius:26px;padding:clamp(20px,5.5vw,30px);
+  background:linear-gradient(155deg,rgba(40,41,46,.66),rgba(18,19,22,.72));
+  -webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);
+  box-shadow:0 40px 80px -28px rgba(0,0,0,.85),0 14px 30px -14px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .35s ease-out;transform-style:preserve-3d;overflow:hidden}
+.card.moving{transition:transform .08s linear}
+.card::before,.card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.card::before{background:linear-gradient(140deg,#e9ecef,#7d838b 22%,#3a3d42 48%,#a9aeb5 70%,#dcc08a)}
+.card::after{background:conic-gradient(from var(--ang),transparent 0 72%,rgba(255,236,190,.95) 88%,transparent 100%);animation:orbit 9s linear infinite}
+@keyframes orbit{to{--ang:360deg}}
+.glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px circle at var(--mx) var(--my),rgba(255,244,214,.13),transparent 55%);transition:opacity .4s}
+.card>*:not(.glare){position:relative}
+
+.bank{display:flex;align-items:center;gap:14px;min-width:0}
+.logo{flex:none;width:54px;height:54px;border-radius:15px;display:grid;place-items:center;overflow:hidden;
+  background:linear-gradient(145deg,#33353a,#17181b);border:1px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 14px rgba(0,0,0,.4);color:var(--gold)}
+.logo img{width:100%;height:100%;object-fit:contain;padding:8px;background:#f2eee5}
+.logo svg{width:28px;height:28px}
+.bank-t{min-width:0}
+.bank-n{font-weight:700;font-size:clamp(1.05rem,4.6vw,1.2rem);overflow-wrap:anywhere;line-height:1.25}
+.bank-s{color:var(--muted);font-size:.84rem;margin-top:2px}
+.rule{height:1px;margin:22px 0 20px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+.label{color:var(--muted);font-size:.82rem;font-weight:500;letter-spacing:.02em}
+.holder{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.holder-n{font-weight:600;font-size:clamp(1.05rem,4.8vw,1.25rem);margin-top:5px;overflow-wrap:anywhere;line-height:1.3}
+.icon-btn{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;cursor:pointer;color:var(--ink);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s,border-color .2s,transform .15s,color .2s}
+.icon-btn:hover{background:rgba(220,192,138,.14);border-color:var(--gold-d);color:var(--gold)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn .ok,.btn .ok{display:none}
+.is-ok .cp{display:none}.is-ok .ok{display:block}
+.icon-btn.is-ok{color:#9be0b0;border-color:#5fae78;background:rgba(95,174,120,.14)}
+
+.iban{margin-top:20px;padding:16px clamp(14px,4vw,20px) 18px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(0,0,0,.42),rgba(0,0,0,.26));border:1px solid rgba(220,192,138,.22);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.02)}
+.groups{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-weight:700;font-size:clamp(1.12rem,5.6vw,1.5rem);letter-spacing:.04em;
+  font-variant-numeric:tabular-nums;color:#f6f2e9;text-shadow:0 0 18px rgba(220,192,138,.25);user-select:text}
+.groups span{white-space:nowrap}
+
+.btn{position:relative;overflow:hidden;width:100%;min-height:58px;margin-top:18px;border:0;border-radius:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;font:700 1.05rem var(--ui);color:#1a1409;
+  background:linear-gradient(180deg,#ecd6a4,#d2b072 55%,#b5935a);
+  box-shadow:0 10px 24px -8px rgba(220,192,138,.5),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -2px 0 rgba(0,0,0,.18);
+  transition:transform .18s,box-shadow .25s,filter .2s}
+.btn svg{width:21px;height:21px;flex:none}
+.btn::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:30%;transform:skewX(-22deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:shine 6s ease-in-out 2.5s infinite}
+@keyframes shine{0%{left:-40%}22%,100%{left:140%}}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.05);box-shadow:0 16px 30px -10px rgba(220,192,138,.65),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 0 rgba(0,0,0,.18)}
+.btn:hover::after{animation:shine .9s ease-out 1}
+.btn:active{transform:translateY(1px) scale(.985);filter:brightness(.97)}
+.btn.is-ok{background:linear-gradient(180deg,#b7ecc6,#7ccb94 55%,#4f9f69);color:#0c2214}
+.btn.is-err{animation:shake .45s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hint{margin-top:12px;text-align:center;color:var(--muted);font-size:.8rem}
+
+.toast{position:fixed;z-index:5;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translate(-50%,24px);opacity:0;pointer-events:none;
+  max-width:min(92vw,420px);padding:13px 20px;border-radius:14px;font-weight:600;font-size:.95rem;text-align:center;
+  background:rgba(24,25,28,.94);border:1px solid #5fae78;color:#e6f6ea;box-shadow:0 18px 40px rgba(0,0,0,.6);
+  transition:opacity .3s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.toast.err{border-color:#d9776f;color:#fbe4e1}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:560px){
+  .blob{filter:blur(60px);opacity:.4}.big.c,.big.d{display:none}.big{opacity:.055}
+  .pole{transform:scale(.8);transform-origin:top right}
+  .card{border-radius:22px}.tag{margin-bottom:22px}
+}
+@media (max-width:340px){.groups{gap:6px 10px}.logo{width:46px;height:46px}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .card{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Paylaşılan SVG çizimleri -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-scissors" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="51" r="7"/><circle cx="48" cy="51" r="7"/><path d="M20.5 45.5 44 5M43.5 45.5 20 5"/><circle cx="32" cy="25" r="1.6"/></g></symbol>
+    <symbol id="i-comb" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="12" width="54" height="18" rx="5"/><path d="M11 30v22M19 30v22M27 30v22M35 30v22M43 30v22M51 30v22"/></g></symbol>
+    <symbol id="i-razor" viewBox="0 0 64 64"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 42 41 42 41 31H14Q5 31 5 42Z"/><path d="M41 37 57 20 62 25 46 42"/><circle cx="42" cy="37" r="1.8"/><path d="M11 36h22"/></g></symbol>
+  </defs>
+</svg>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="pattern">
+    <svg xmlns="http://www.w3.org/2000/svg"><defs>
+      <pattern id="pat" width="260" height="260" patternUnits="userSpaceOnUse">
+        <use href="#i-scissors" x="20" y="24" width="56" height="56" transform="rotate(-20 48 52)"/>
+        <use href="#i-comb" x="150" y="40" width="56" height="56" transform="rotate(14 178 68)"/>
+        <use href="#i-razor" x="70" y="150" width="60" height="60" transform="rotate(-12 100 180)"/>
+        <use href="#i-scissors" x="178" y="170" width="44" height="44" transform="rotate(32 200 192)"/>
+        <use href="#i-comb" x="10" y="190" width="40" height="40" transform="rotate(-28 30 210)"/>
+      </pattern></defs>
+      <rect width="100%" height="100%" fill="url(#pat)"/></svg>
+  </div>
+  <div class="big a"><svg viewBox="0 0 64 64"><use href="#i-scissors"/></svg></div>
+  <div class="big b"><svg viewBox="0 0 64 64"><use href="#i-razor"/></svg></div>
+  <div class="big c"><svg viewBox="0 0 64 64"><use href="#i-comb"/></svg></div>
+  <div class="big d"><svg viewBox="0 0 64 64"><use href="#i-scissors"/></svg></div>
+  <canvas id="sparks"></canvas>
+  <div class="vignette"></div>
+</div>
+
+<div class="pole" aria-hidden="true"><i></i></div>
+
+<main>
+  <svg class="emblem rise s1" viewBox="0 0 120 120" role="img" aria-label="Makas ve ustura amblemi">
+    <g class="ring" fill="none" stroke="currentColor"><circle cx="60" cy="60" r="57" stroke-width="1" opacity=".7"/><circle cx="60" cy="60" r="52" stroke-width=".8" stroke-dasharray="1.5 5" stroke-linecap="round" opacity=".8"/></g>
+    <use href="#i-razor" x="30" y="30" width="62" height="62" transform="rotate(32 60 60)"/>
+    <use href="#i-scissors" x="26" y="26" width="68" height="68" transform="rotate(-24 60 60)" style="color:#f2eee5"/>
+  </svg>
+  <h1 class="rise s1" id="shopName"></h1>
+  <p class="tag rise s2" id="tagline"></p>
+
+  <div class="stage rise s3">
+    <section class="card" id="card" aria-label="Banka hesap bilgileri">
+      <div class="glare" id="glare"></div>
+      <div class="bank">
+        <div class="logo" id="logo"></div>
+        <div class="bank-t"><div class="bank-n" id="bankName"></div><div class="bank-s">Havale / EFT için hesap bilgileri</div></div>
+      </div>
+      <div class="rule"></div>
+      <div class="holder">
+        <div style="min-width:0"><div class="label" id="holderLabel">Hesap sahibi</div><div class="holder-n" id="holderName"></div></div>
+        <button class="icon-btn" id="copyName" type="button" aria-label="Hesap sahibi adını kopyala" title="Hesap sahibi adını kopyala">
+          <svg class="cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>
+          <svg class="ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        </button>
+      </div>
+      <div class="iban">
+        <div class="label" id="ibanLabel">IBAN</div>
+        <div class="groups" id="groups"></div>
+      </div>
+      <button class="btn" id="copyIban" type="button">
+        <svg class="cp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>
+        <svg class="ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        <span id="btnText">IBAN’ı Kopyala</span>
+      </button>
+      <p class="hint">IBAN panoya boşluksuz kopyalanır.</p>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ==========================================================
+   YAPILANDIRMA — değiştirmeniz gereken tek bölüm burasıdır
+   ========================================================== */
+const CONFIG = {
+  shopName:  "[BERBER ADI]",            // İşletme adı
+  tagline:   "Tarzın, detaylarda saklı.",
+  bankName:  "[BANKA ADI]",             // Banka adı
+  bankLogo:  "",                        // Logo adresi (örn: "logo.png"). Boşsa banka simgesi gösterilir
+  holder:    "[AD SOYAD]",              // Hesap sahibi
+  iban:      "TR00 0000 0000 0000 0000 0000 00"  // IBAN (boşluklu veya boşluksuz yazabilirsiniz)
+};
+/* ========================================================== */
+
+const $ = id => document.getElementById(id);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ibanRaw = CONFIG.iban.replace(/\s+/g, "").toUpperCase();
+
+/* İçeriği yerleştir */
+document.title = CONFIG.shopName + " · IBAN Bilgileri";
+$("shopName").textContent = CONFIG.shopName;
+$("tagline").textContent = CONFIG.tagline;
+$("bankName").textContent = CONFIG.bankName;
+$("holderName").textContent = CONFIG.holder;
+$("groups").setAttribute("aria-label", "IBAN: " + ibanRaw.split("").join(" "));
+(ibanRaw.match(/.{1,4}/g) || []).forEach(g => {
+  const s = document.createElement("span"); s.textContent = g; s.setAttribute("aria-hidden", "true"); $("groups").appendChild(s);
+});
+
+/* Banka logosu / yedek simge */
+const bankIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5"/><path d="M4.5 20h15M5.5 9.5V17M10 9.5V17M14 9.5V17M18.5 9.5V17"/></svg>';
+const logoBox = $("logo");
+function showIcon(){ logoBox.innerHTML = bankIcon; }
+if (CONFIG.bankLogo) {
+  const img = new Image();
+  img.alt = CONFIG.bankName + " logosu";
+  img.onerror = showIcon;
+  img.src = CONFIG.bankLogo;
+  logoBox.appendChild(img);
+} else showIcon();
+
+/* Kopyalama */
+async function copyText(text){
+  try{ if (navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
+  try{
+    const t = document.createElement("textarea");
+    t.value = text; t.setAttribute("readonly",""); t.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(t); t.select(); t.setSelectionRange(0, text.length);
+    const ok = document.execCommand("copy"); t.remove(); return ok;
+  }catch(e){ return false; }
+}
+let toastTimer;
+function toast(msg, err){
+  const t = $("toast"); t.textContent = msg; t.classList.toggle("err", !!err); t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), err ? 4200 : 2200);
+}
+function wire(btn, getText, okMsg, errMsg, onState){
+  let timer;
+  btn.addEventListener("click", async () => {
+    const ok = await copyText(getText());
+    clearTimeout(timer);
+    if (ok){
+      btn.classList.add("is-ok"); onState && onState(true); toast(okMsg);
+      timer = setTimeout(() => { btn.classList.remove("is-ok"); onState && onState(false); }, 2200);
+    } else {
+      btn.classList.remove("is-err"); void btn.offsetWidth; btn.classList.add("is-err"); toast(errMsg, true);
+    }
+  });
+}
+const ibanText = $("btnText");
+wire($("copyIban"), () => ibanRaw, "IBAN kopyalandı",
+  "Kopyalanamadı. IBAN’ı basılı tutup elle kopyalayabilirsiniz.",
+  on => ibanText.textContent = on ? "Kopyalandı" : "IBAN’ı Kopyala");
+wire($("copyName"), () => CONFIG.holder, "Hesap sahibi kopyalandı",
+  "Kopyalanamadı. Adı seçip elle kopyalayabilirsiniz.");
+
+/* Kart eğimi ve ışık takibi (yalnızca fare ile) */
+const card = $("card");
+if (!reduce && matchMedia("(hover:hover) and (pointer:fine)").matches){
+  card.addEventListener("pointermove", e => {
+    const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    card.classList.add("moving");
+    card.style.setProperty("--mx", x * 100 + "%"); card.style.setProperty("--my", y * 100 + "%");
+    card.style.setProperty("--ry", ((x - .5) * 5) + "deg"); card.style.setProperty("--rx", ((.5 - y) * 4) + "deg");
+  });
+  card.addEventListener("pointerleave", () => {
+    card.classList.remove("moving");
+    ["--rx","--ry"].forEach(k => card.style.setProperty(k, "0deg"));
+    card.style.setProperty("--mx","50%"); card.style.setProperty("--my","0%");
+  });
+}
+
+/* Seyrek ışık parçacıkları */
+(function(){
+  const cv = $("sparks"), ctx = cv.getContext("2d");
+  const small = innerWidth < 600;
+  const N = reduce ? 0 : (small ? 12 : 28);
+  let w, h, dpr, raf, parts = [];
+  function size(){
+    dpr = Math.min(devicePixelRatio || 1, 2); w = innerWidth; h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const mk = () => ({x:Math.random()*w,y:Math.random()*h,r:.6+Math.random()*1.5,vy:-(.06+Math.random()*.18),vx:(Math.random()-.5)*.08,p:Math.random()*6.28,s:.4+Math.random()*.9});
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    for (const p of parts){
+      p.x += p.vx; p.y += p.vy; p.p += .012 * p.s;
+      if (p.y < -6){ p.y = h + 6; p.x = Math.random()*w; }
+      const a = .12 + .38 * (.5 + .5 * Math.sin(p.p));
+      const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+      g.addColorStop(0,"rgba(240,215,160,"+a+")"); g.addColorStop(1,"rgba(240,215,160,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,6.283); ctx.fill();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  size(); parts = Array.from({length:N}, mk);
+  addEventListener("resize", () => { size(); });
+  if (N){
+    frame();
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) cancelAnimationFrame(raf); else { cancelAnimationFrame(raf); frame(); }
+    });
+  }
+})();
+</script>
+</body>
+</html>
